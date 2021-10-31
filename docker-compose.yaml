@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  simpleblog:
+    build: .
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./app/media:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgresdb
+  postgresdb:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
