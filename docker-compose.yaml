@@ -3,14 +3,15 @@ version: '3'
 services:
   simpleblog:
     build: .
-    command: >
-      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - ./app/media:/app/media
-    ports:
-      - "8000:8000"
     depends_on:
       - postgresdb
+    volumes:
+      - ./media:/app/media
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    restart: on-failure # Keep it simple. Ini bakal restart sampai sukses [JIKA GAGAL], karena meskipun sudah ready, db blm tentu siap acc connection -> https://docs.docker.com/compose/startup-order/
   postgresdb:
     image: postgres
     restart: unless-stopped
